@@ -1,0 +1,34 @@
+name: Aggiorna EPG
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Esegue ogni giorno a mezzanotte UTC; personalizza se serve
+  workflow_dispatch:  # Permette di eseguire manualmente il workflow
+
+jobs:
+  update-epg:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Scarica il file XML.gz
+        run: |
+          curl -L -o epg.xml.gz https://epgshare01.online/epgshare01/epg_ripper_IT1.xml.gz || { echo "Download fallito"; exit 1; }
+
+      - name: Decomprimi il file
+        run: |
+          gunzip -f epg.xml.gz
+
+      - name: Verifica e committa le modifiche
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          # Controlla se ci sono modifiche (assumendo che il file decomresso sia 'epg.xml')
+          if git diff --quiet; then
+            echo "Nessuna modifica rilevata."
+          else
+            git add epg.xml
+            git commit -m "Aggiornamento automatico della guida EPG"
+            git push
+          fi
