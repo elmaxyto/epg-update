@@ -19,9 +19,12 @@ jobs:
       - name: Decomprimi e rinomina il file
         run: |
           gunzip -f epg.xml.gz
-          ls -l  # Elenca i file presenti per verificare il nome del file decompresso
-          # Utilizza un wildcard per rinominare l'unico file .xml presente in cartella
-          mv *.xml epg.xml
+          xml_file=$(ls *.xml | head -n 1)
+          if [ "$xml_file" != "epg.xml" ]; then
+            mv "$xml_file" epg.xml
+          else
+            echo "Il file decompresso si chiama già epg.xml"
+          fi
 
       - name: Verifica e committa le modifiche
         run: |
