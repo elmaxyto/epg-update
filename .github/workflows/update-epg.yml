@@ -19,7 +19,9 @@ jobs:
       - name: Decomprimi e rinomina il file
         run: |
           gunzip -f epg.xml.gz
-          mv epg_ripper_IT1.xml epg.xml
+          ls -l  # Elenca i file presenti per verificare il nome del file decompresso
+          # Utilizza un wildcard per rinominare l'unico file .xml presente in cartella
+          mv *.xml epg.xml
 
       - name: Verifica e committa le modifiche
         run: |
@@ -32,4 +34,3 @@ jobs:
             git commit -m "Aggiornamento automatico della guida EPG"
             git push
           fi
-
