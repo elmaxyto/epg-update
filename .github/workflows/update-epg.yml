@@ -16,15 +16,15 @@ jobs:
         run: |
           curl -L -o epg.xml.gz https://epgshare01.online/epgshare01/epg_ripper_IT1.xml.gz || { echo "Download fallito"; exit 1; }
 
-      - name: Decomprimi il file
+      - name: Decomprimi e rinomina il file
         run: |
           gunzip -f epg.xml.gz
+          mv epg_ripper_IT1.xml epg.xml
 
       - name: Verifica e committa le modifiche
         run: |
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
-          # Controlla se ci sono modifiche (assumendo che il file decomresso sia 'epg.xml')
           if git diff --quiet; then
             echo "Nessuna modifica rilevata."
           else
@@ -32,3 +32,4 @@ jobs:
             git commit -m "Aggiornamento automatico della guida EPG"
             git push
           fi
+
