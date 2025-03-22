@@ -32,6 +32,20 @@ jobs:
             echo "Il file decompresso si chiama già epg.xml"
           fi
 
+      - name: Scarica l'EPG di Pluto TV
+        run: |
+          curl -L -o pluto_tv_epg.xml https://raw.githubusercontent.com/matthuisman/i.mjh.nz/master/PlutoTV/it.xml || { echo "Download fallito"; exit 1; }
+
+      - name: Installa Python e librerie necessarie
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install xml.etree.ElementTree
+
+      - name: Unisci le EPG con Python
+        run: |
+          python3 unisci_epg.py
+
       - name: Verifica e committa le modifiche
         run: |
           git config --global user.email "action@github.com"
